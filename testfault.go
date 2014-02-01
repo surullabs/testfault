@@ -2,9 +2,9 @@
 // All rights reserved.
 
 /*
-Package faultcheck provides utilities to help with testing in conjunction with the fault library.
+Package testfault provides utilities to help with testing in conjunction with the fault library.
 */
-package faultcheck
+package testfault
 
 import (
 	"fmt"

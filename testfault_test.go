@@ -1,7 +1,7 @@
 // Copyright 2014, Surul Software Labs GmbH
 // All rights reserved.
 
-package faultcheck
+package testfault
 
 import (
 	"errors"
