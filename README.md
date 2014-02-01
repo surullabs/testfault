@@ -4,6 +4,8 @@ testfault
 
 testfault is a go library that aims to significantly reduce the time taken to test a package. It is intended to be used in conjunction with the [Fault](https://godoc.org/github.com/surullabs/fault) package.
 
+*NOTE: The API is not final and subject to change*
+
 ## Documentation and Examples
 
 Please consult the package [GoDoc](https://godoc.org/github.com/surullabs/testfault)
