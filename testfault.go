@@ -123,7 +123,7 @@ func (t *TestChecker) Recording() Recording { return t.recorder.sites }
 
 // Fail will create an artificial failure for the i'th call to one of the
 // checking methods. Only one failure can be enqueued at a time.
-func (t *TestChecker) Fail(index int, err error) { t.fail = &failure{index, err} }
+func (t *TestChecker) FailAt(index int, err error) { t.fail = &failure{index, err} }
 
 // ResetFailures clears any enqueued failures.
 func (t *TestChecker) ResetFailures() { t.fail = nil }
@@ -199,4 +199,12 @@ func (t *TestChecker) Output(i interface{}, err error) interface{} {
 		err = failed
 	}
 	return t.checker.Output(i, err)
+}
+
+func (t *TestChecker) Failure(err error) fault.Fault {
+	t.recorder.record()
+	if failed := t.failNow(); failed != nil && err == nil {
+		err = failed
+	}
+	return t.checker.Failure(err)
 }

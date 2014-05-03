@@ -14,7 +14,7 @@ import (
 var _ = fmt.Sprintf
 
 func TestPatching(t *testing.T) {
-	var checker fault.FaultCheck = fault.NewChecker()
+	var checker fault.FaultCheck = fault.NewChecker().SetFaulter(fault.Simple)
 	var origChecker = checker
 	tester := NewTestChecker(nil)
 	defer func() {
@@ -143,7 +143,7 @@ func checkResults(t *testing.T, expected, obtained []site) {
 }
 
 func TestRecording(t *testing.T) {
-	var checker fault.FaultCheck = fault.NewChecker()
+	var checker fault.FaultCheck = fault.NewChecker().SetFaulter(fault.Simple)
 	tester := NewTestChecker(nil)
 	defer tester.Patch(&checker).Reset()
 	cases := genCases()
@@ -156,7 +156,7 @@ func TestRecording(t *testing.T) {
 }
 
 func TestTrackErrors(t *testing.T) {
-	var checker fault.FaultCheck = fault.NewChecker()
+	var checker fault.FaultCheck = fault.NewChecker().SetFaulter(fault.Simple)
 	tester := NewTestChecker(nil)
 	defer tester.Patch(&checker).Reset()
 	cases := genCases()
@@ -226,7 +226,7 @@ func TestTrackErrors(t *testing.T) {
 }
 
 func TestSimulatedFailures(t *testing.T) {
-	var checker fault.FaultCheck = fault.NewChecker()
+	var checker fault.FaultCheck = fault.NewChecker().SetFaulter(fault.Simple)
 	tester := NewTestChecker(nil)
 	defer tester.Patch(&checker).Reset()
 	cases := genCases()
@@ -259,7 +259,7 @@ func TestSimulatedFailures(t *testing.T) {
 		{cases[15], 4, errors.New("some error"), errorExpected[4].err}, // A real failure
 	} {
 		tester.ResetFailures()
-		tester.Fail(test.failAt, test.err)
+		tester.FailAt(test.failAt, test.err)
 
 		tester.StartRecording()
 		failed := errorGen(checker, test.tx.pass...)
