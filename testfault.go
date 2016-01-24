@@ -8,9 +8,10 @@ package testfault
 
 import (
 	"fmt"
-	"github.com/surullabs/fault"
 	"regexp"
 	"strings"
+
+	"github.com/surullabs/fault"
 )
 
 type site struct {
@@ -110,7 +111,8 @@ type TestChecker struct {
 }
 
 func NewTestChecker(onError func(...interface{})) *TestChecker {
-	return &TestChecker{recorder: newRecorder(), checker: fault.NewChecker(), onError: onError}
+	checker := fault.NewChecker().SetFaulter(&fault.DebugFaulter{fault.TypePrefix(&TestChecker{})})
+	return &TestChecker{recorder: newRecorder(), checker: checker, onError: onError}
 }
 
 type Resetter struct {
@@ -147,7 +149,7 @@ func (t *TestChecker) RecoverPanic(errPtr *error, panicked interface{}) {
 	t.checker.RecoverPanic(errPtr, panicked)
 	t.recorder.trackError(*errPtr)
 	if t.onError != nil && *errPtr != nil {
-		t.onError(*errPtr)
+		t.onError("\n" + fault.VerboseTrace(*errPtr))
 	}
 }
 
