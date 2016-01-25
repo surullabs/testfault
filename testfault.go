@@ -149,7 +149,24 @@ func (t *TestChecker) RecoverPanic(errPtr *error, panicked interface{}) {
 	t.checker.RecoverPanic(errPtr, panicked)
 	t.recorder.trackError(*errPtr)
 	if t.onError != nil && *errPtr != nil {
-		t.onError("\n" + fault.VerboseTrace(*errPtr))
+		trace := fault.GetTrace(*errPtr)
+		if len(trace) == 0 {
+			t.onError(*errPtr)
+			return
+		}
+		runnerIndex := -1
+		for i, tr := range trace {
+			if tr.Name == "testing.tRunner" {
+				runnerIndex = i
+				break
+			}
+		}
+		prefix := "\n"
+		if runnerIndex > 0 {
+			parts := strings.Split(trace[runnerIndex-1].Name, ".")
+			prefix = "Failure in " + parts[len(parts)-1] + prefix
+		}
+		t.onError(prefix + fault.VerboseTrace(*errPtr))
 	}
 }
 
